@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+#------------------------------------------------------
+#file:crawl
+#desc:控制程序,对命令行参数做处理
+#author:we.agathe@gmail.com
+#------------------------------------------------------
+import sys,getopt
+from Logger import Logger
+from scheduler import *
+import os
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
+def main():
+    if len(sys.argv) < 2:
+        print 'The input parameter is error,just like: ./crawl spider'
+        sys.exit()
+
+    global log
+    log = Logger()
+    if len(sys.argv) == 3:
+        if sys.argv[2] == '-d':
+            sys.stdout = log
+            sys.stderr = log
+
+    print sys.argv[1] + ' begining to crawl ... ...'
+    m = __import__('scheduler')
+    c = getattr(m, sys.argv[1])
+    spider = c()
+    spider.start()
+
+#--------main------------------------
+if __name__ == "__main__":
+    import socket
+    socket.setdefaulttimeout(10)
+    main()
+
