@@ -9,17 +9,11 @@ import sys
 import traceback
 import time
 import os
-'''
-类名:         Logger
-功能描述:    打印输出到日志中
-调用模块:    sys模块
-作 者:未知
-'''
 
 try:
     class Logger(object):
         ft = time.strftime("%Y%m%d-%H%M%S", time.localtime(time.time()))
-        day =time.strftime("%Y%m%d", time.localtime(time.time()))# 记录当天日志到子目录
+        day =time.strftime("%Y%m%d", time.localtime(time.time()))
         path = './logs'
         if not os.path.exists(path):
             #os.makedirs(path.decode('utf8','ignore').encode(sys.getfilesystemencoding()))
@@ -59,10 +53,6 @@ try:
         def flush(self):
             if self._file is not None:
                 self._file.flush()
-
-    mylogger = Logger()
-    # sys.stdout = mylogger
-    # sys.stderr = mylogger
 
 except:
     traceback.print_exc()

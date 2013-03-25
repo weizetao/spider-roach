@@ -3,8 +3,7 @@
 #------------------------------------------------------
 #file:downloader.py
 #desc:download the web page
-#author:weizetao@pica.com
-#date:2012-08-30
+#author:we.agathe@gmail.com
 #------------------------------------------------------
 import urllib2
 import time

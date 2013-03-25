@@ -14,7 +14,6 @@ from base import BaseDb
 
 
 class Parse_url(BaseParse):
-    """对列表页抽取url链接"""
     def __init__(self,list):
         self.parser = etree.HTMLParser(encoding = 'utf-8')
         self.db = BaseDb()
@@ -23,20 +22,19 @@ class Parse_url(BaseParse):
         self.url_set = list['url_set']
 
     def parse(self, url, page,threadName):
-        #匹配url到maps中的抽取规则
+        #Match extraction rules
         rule = self.findrules(url)
-        # print rule
         if not rule:
             print 'Not found xpath:' + url 
-            self.db.exception(url, 1)#无匹配规则
+            self.db.exception(url, 1)#No matched
             return False
 
-        #按照正则匹配抽取内容
+        #extraction information with regular 
         if 'page_re' in rule:
             self.extract_re(rule, url, page)
             return True
 
-        #将html页面DOM化
+        #Make DOM of html page
         try:
             self.html = etree.HTML(page, self.parser)
         except:
@@ -47,7 +45,7 @@ class Parse_url(BaseParse):
         if 'crawled' in rule:
             self.crawled = rule['crawled']
 
-        #开始抽取链接
+        #extraction information with xpath
         if 'link_xpath' in rule:
             self.extract_link(rule)
 
@@ -79,7 +77,7 @@ class Parse_url(BaseParse):
         for lx in rule['link_xpath']:
             urls = self.html.xpath(lx)
             for i in urls:
-                #存储到linkbase的待抓取队列
+                #save the url to the queue of linkbase
                 if i[0] == '/': 
                     tmp = pre_url + i
                 elif i.find('http://') == 0:
@@ -92,7 +90,6 @@ class Parse_url(BaseParse):
                     self.url_set.insert(tmp, self.crawled)
 
     def extract_page_xpath(self, rule, url):
-        #开始抽取页面信息
         self.item.clear()
         self.item['url'] = url
         try:
@@ -106,36 +103,32 @@ class Parse_url(BaseParse):
                     for k,v in rule['page_xpath2'].items():
                         self.add_xpath2(k, v)
                     if self.item['name'] == '0':
-                        self.db.exception(url, 2) #抽取页面异常
+                        self.db.exception(url, 2)
                         return False
                 else:
-                    self.db.exception(url, 2) #抽取页面异常
+                    self.db.exception(url, 2) 
                     return False
         except:
             info=sys.exc_info()
             print info[0],":---",info[1]
-            self.db.exception(url, 2) #抽取页面异常
+            self.db.exception(url, 2) 
             return False
 
             
-        #存储进pagebase
-        if self.url_set.isnewpage(url, self.crawled):#新页面
+        #save the information into mysql
+        if self.url_set.isnewpage(url, self.crawled):#insert
             sql = self.db.sql_insert(rule['table'], self.item)
-            # print sql
             if self.db.execsql(sql):
                 return True
             else:
-                #插入Pagebase异常，记录
                 self.db.exception(url, 3)
                 return False
 
-        else:#需要更新的页面
+        else:#update
             sql = self.db.sql_update(rule['table'], self.item)
-            # print sql
             if self.db.execsql(sql):
                 return True
             else:
-                #更新Pagebase异常，记录
                 self.db.exception(url, 4)
                 return False
         
@@ -153,9 +146,7 @@ class Parse_url(BaseParse):
             self.item[k] = self.search(v, page)
 
         sql = self.db.sql_update(table, self.item)
-        # print sql
         if not self.db.execsql(sql):
-            #更新Pagebase异常，记录
             self.db.exception(url, 5)
 
     def search(self, pe, str):

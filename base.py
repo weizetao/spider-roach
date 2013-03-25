@@ -54,14 +54,14 @@ class BaseDb():
             return str(s)
 
     def sql_insert(self, table, d):
-        # 构造INSERT SQL语句
+        #construct INSERT SQL
         ks = ",".join(d.keys())
         vs = ",".join([self.escapeString(v) for v in d.values()])
         sql = 'insert into %s (%s) values (%s)' % (table,ks,vs)
         return sql
 
     def sql_update(self, table, d, key_name='url', renew=2):
-        # 构造UPDATE SQL语句
+        # construct UPDATE SQL
         key_value = d.pop(key_name)
         tmp = ''
         for k,v in d.items():
@@ -70,16 +70,15 @@ class BaseDb():
         return sql
 
     def exception(self, url, type):
-        #异常处理
-        #type: 0-获取页面失败
-        #  1-无匹配规则
-        #  2-抽取信息异常
-        #  3-insert异常
-        #  4-update异常
-        #  5-json抽取失败
-        #  6-存储页面为文件异常
-        #  7-错误页
-        #  8-url错误(http的403、404等错误)
+        #type: 0-fail to get the page
+        #  1-No matching rules
+        #  2-infomation extraction failure
+        #  3-insert into db failure
+        #  4-update db failure
+        #  5-json infomation extraction failure
+        #  6-failed to write file
+        #  7-Error pages
+        #  8-Error code of http response(http's 403、404)
         sql = "insert into spider_exception (url,time,type) values ('%s', now(), %s)" % (url, type)
         print "[exception]type=%s,url=%s" % (type,url)
         self.execsql(sql)
@@ -97,7 +96,7 @@ class BaseParse():
     item = {}
     
     def findrules(self,url):
-        """返回对应的抽取规则"""
+        """Return the corresponding selection rules"""
         for k,v in url_maps.items():
             if re.match(k, url):
                 return v
@@ -178,7 +177,7 @@ class BaseSpider():
     def __Rules(self):
         pass
     def AddRules(self, list, pipe, name='Unkonwn', threadsize=1):
-        """添加抓取规则,list:存放url的列表，pipe:用来解析该页面的类，name:爬虫的名字，threadsize:开启的线程数"""
+        """Add extraction rules"""
         self.rules += [{'name':name,'list':list,'pipe':pipe, 'threadsize':threadsize},]
 
     def scheduling(self):
