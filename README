@@ -4,8 +4,30 @@ scheduler.py
 定义自己的爬虫,实现爬虫的调度算法，并将pipeline中负责解析的类注册到爬虫中：
 继承BaseSpider基类即可实现一个自己的爬虫，然后重写 Rules函数，定义自己的爬行策略。
 
-msp.cfg
+maps.cfg
 配置待抓取页面相应的抽取规则
+详细例子参见maps.cfg
+{
+    "http://venue.damai.cn/search.aspx":{
+        "info":"抓取大麦网场馆列表页页",
+        "pre_url":"http://venue.damai.cn",
+        "link_xpath":[
+            "//div[@class='pagination']/a[@class='next']/@href",
+            "//span[@class='type']/h3/a/@href",
+            ],
+     },
+    "http://venue.damai.cn/venue":{
+        "info":"抓取大麦网场馆详情页",
+        "table":"pastime",
+        "page_xpath":{
+            "name":"//div[@class='site_guide']/a[3]/text()",
+            "image":"//div[@class='venueDetal']/p/img[@class='img']/@src",
+            "addr":"//div[@class='info']/p/a[@class='VenueAddress'][1]/text()",
+            "city_name":"//input[@id='city']/@value",
+            "detail":"//div[@class='info']/div/text()",
+            }
+     },
+}
 
 运行程序：
 ./crawl spider -d(可选)
@@ -13,9 +35,8 @@ msp.cfg
 目前实现功能：
 1.多线程下载,线程数可配置
 2.根据配置自动抽取页面
-3.根据配置构造SQL语句执行
-4.可自定
-5.
+3.根据配置构造SQL语句写入mysql
+4.
 
-待实现的功能：
-1.
+TODO List：
+1.supports cookies,and authentication.

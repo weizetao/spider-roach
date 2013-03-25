@@ -12,21 +12,22 @@ import os
 
 try:
     class Logger(object):
-        ft = time.strftime("%Y%m%d-%H%M%S", time.localtime(time.time()))
-        day =time.strftime("%Y%m%d", time.localtime(time.time()))
-        path = './logs'
-        if not os.path.exists(path):
-            #os.makedirs(path.decode('utf8','ignore').encode(sys.getfilesystemencoding()))
-            os.makedirs(path)
-        fn = os.path.join(path,'log-%s.txt') % ft
-        _file = None
+        def __init__(self, path='./logs'):
+            ft = time.strftime("%Y%m%d-%H%M%S", time.localtime(time.time()))
+            self._day =time.strftime("%Y%m%d", time.localtime(time.time()))
+            self._file = None
+            self._path = path
+            if not os.path.exists(self._path):
+                #os.makedirs(path.decode('utf8','ignore').encode(sys.getfilesystemencoding()))
+                os.makedirs(self._path)
+            self.fn = os.path.join(self._path,'log-%s.txt') % ft
 
         def checktime(self, mytime):
             today = time.strftime("%Y%m%d", mytime)# 
-            if today != self.day:
+            if today != self._day:
                 ft = time.strftime("%Y%m%d-%H%M%S", mytime)
-                self.fn = os.path.join(path,'log-%s.txt') % ft
-                self.day = today
+                self.fn = os.path.join(self._path,'log-%s.txt') % ft
+                self._day = today
                 self._file.close()
                 self._file = None
 

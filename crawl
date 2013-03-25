@@ -7,27 +7,47 @@
 #------------------------------------------------------
 import sys,getopt
 from Logger import Logger
-from scheduler import *
 import os
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+def usage():
+    print 'parameter error ...'
+    print '-----------------------------'
+    print '''./crawl spider 
+options:
+    -d path ,write output into file '''
+    print '-----------------------------'
 
 def main():
-    if len(sys.argv) < 2:
-        print 'The input parameter is error,just like: ./crawl spider'
+    try:
+        opts,args = getopt.getopt(sys.argv[1:], 'd:')
+    except getopt.GetoptError as err:
+        print str(err)
+        usage()
         sys.exit()
 
     global log
-    log = Logger()
-    if len(sys.argv) == 3:
-        if sys.argv[2] == '-d':
+    for k,v in opts:
+        if k == '-d':
+            log = Logger(v)
             sys.stdout = log
             sys.stderr = log
+        elif k == '-h':
+            usage()
+            sys.exit()
 
-    print sys.argv[1] + ' begining to crawl ... ...'
-    m = __import__('scheduler')
-    c = getattr(m, sys.argv[1])
+    if len(args) != 1:
+        usage()
+        sys.exit()
+
+    print args[0] + ' begining to crawl ... ...'
+    try:
+        m = __import__('scheduler')
+        c = getattr(m, args[0])
+    except:
+        print 'Can not find the spider of ',args[0]
+        sys.exit()
     spider = c()
     spider.start()
 
