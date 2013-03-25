@@ -1,26 +1,58 @@
-crawl
-控制爬虫运行的入口，以后可以修改成读取命令参数，即可执行对应不同的爬虫策略。
-scheduler.py
-定义自己的爬虫,实现爬虫的调度算法，并将pipeline中负责解析的类注册到爬虫中：
+INSTALL
+
+确认安装Python2.7及依赖库: 
+MySQLdb: http://sourceforge.net/projects/mysql-python/
+redis: https://pypi.python.org/pypi/redis/
+lxml: http://lxml.de/
+
+下载源码包
+git clone https://github.com/agathewiky/spider-roach.git
+
+How?
+
+scheduler.py 
+定义自己的爬虫,实现爬虫的调度算法，并将pipeline中负责解析的类注册到爬虫中;
 继承BaseSpider基类即可实现一个自己的爬虫，然后重写 Rules函数，定义自己的爬行策略。
+class roach(BaseSpider):
+    def Rules(self):
+        #linkbase
+        linkbase = getRedis()
+
+        url_list = DQueue(linkbase,'url_list')
+        url_set = Record(linkbase, 'crawled_set')
+
+        base.url_maps = get_Maps()
+
+        list = {
+            'url':url_list,
+            'url_set':url_set,
+        }
+
+        self.AddRules(list, 'Parse_url', 'url', 10)
+
+    def scheduling(self):
+        """重写scheduling,实现自己的调度策略"""
+        while 1:
+            #do something
+            time.sleep(5)
 
 maps.cfg
 配置待抓取页面相应的抽取规则
 详细例子参见maps.cfg
 {
     "http://venue.damai.cn/search.aspx":{
-        "info":"抓取大麦网场馆列表页页",
-        "pre_url":"http://venue.damai.cn",
+        "info":"抓取XX网场馆列表页页",
+        "pre_url":"http://venue.damai.cn",#抽取出的link默认添加前缀
         "link_xpath":[
-            "//div[@class='pagination']/a[@class='next']/@href",
-            "//span[@class='type']/h3/a/@href",
+            "//div[@class='pagination']/a[@class='next']/@href", #下一页
+            "//span[@class='type']/h3/a/@href", #详情页
             ],
      },
     "http://venue.damai.cn/venue":{
-        "info":"抓取大麦网场馆详情页",
-        "table":"pastime",
+        "info":"抓取XX网场馆详情页",
+        "table":"pastime", #mysql表名
         "page_xpath":{
-            "name":"//div[@class='site_guide']/a[3]/text()",
+            "name":"//div[@class='site_guide']/a[3]/text()", #与mysql表字段名必须保持一致
             "image":"//div[@class='venueDetal']/p/img[@class='img']/@src",
             "addr":"//div[@class='info']/p/a[@class='VenueAddress'][1]/text()",
             "city_name":"//input[@id='city']/@value",
@@ -29,14 +61,30 @@ maps.cfg
      },
 }
 
-运行程序：
-./crawl spider -d(可选)
+settings.py
+配置Redis,mysql的连接参数
+配置maps.cfg路径位置
+
+
+RUN
+
+./crawl spider_name
+options:
+    -d ./logs 可将输出写入指定文件夹的日志中
+
 
 目前实现功能：
 1.多线程下载,线程数可配置
-2.根据配置自动抽取页面
+2.根据配置抽取页面信息、链接
 3.根据配置构造SQL语句写入mysql
 4.
 
 TODO List：
-1.supports cookies,and authentication.
+1. KISS: Keep it simple & stupid!
+2. Supports cookies,and authentication.
+
+
+Reference:
+程序架构参考淘宝官博：www.searchtb.com/2011/07/快速构建实时抓取集群.html
+
+
