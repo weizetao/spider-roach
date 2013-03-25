@@ -1,3 +1,19 @@
+一个分布式定向抓取集群的简单实现
+
+目前实现功能：
+1.多线程下载,线程数可配置
+2.无需修改代码，按照规则添加配置就可以完成页面抽取、入库
+3.利用Redis的list作为抓取队列，zset作为已抓取集合
+4.支持分布式部署多个爬虫，Redis作为核心，mysql为存储,当然redis/mysql自身拥有各自的扩展方案
+
+TODO List：
+1. KISS: Keep it simple & stupid!
+2. Supports cookies,and authentication.
+3. Write information into files (using protobuf??).
+
+本人自知精力与能力有限，欢迎志同道合之士送上您宝贵的建议与Patch!
+
+
 INSTALL
 
 确认安装Python2.7及依赖库: 
@@ -8,6 +24,7 @@ lxml: http://lxml.de/
 下载源码包
 git clone https://github.com/agathewiky/spider-roach.git
 
+
 How?
 
 scheduler.py 
@@ -17,17 +34,13 @@ class roach(BaseSpider):
     def Rules(self):
         #linkbase
         linkbase = getRedis()
-
         url_list = DQueue(linkbase,'url_list')
         url_set = Record(linkbase, 'crawled_set')
-
         base.url_maps = get_Maps()
-
         list = {
             'url':url_list,
             'url_set':url_set,
         }
-
         self.AddRules(list, 'Parse_url', 'url', 10)
 
     def scheduling(self):
@@ -42,7 +55,7 @@ maps.cfg
 {
     "http://venue.damai.cn/search.aspx":{
         "info":"抓取XX网场馆列表页页",
-        "pre_url":"http://venue.damai.cn",#抽取出的link默认添加前缀
+        "pre_url":"http://venue.damai.cn",#抽取出的link添加默认前缀
         "link_xpath":[
             "//div[@class='pagination']/a[@class='next']/@href", #下一页
             "//span[@class='type']/h3/a/@href", #详情页
@@ -54,8 +67,6 @@ maps.cfg
         "page_xpath":{
             "name":"//div[@class='site_guide']/a[3]/text()", #与mysql表字段名必须保持一致
             "image":"//div[@class='venueDetal']/p/img[@class='img']/@src",
-            "addr":"//div[@class='info']/p/a[@class='VenueAddress'][1]/text()",
-            "city_name":"//input[@id='city']/@value",
             "detail":"//div[@class='info']/div/text()",
             }
      },
@@ -73,18 +84,5 @@ options:
     -d ./logs 可将输出写入指定文件夹的日志中
 
 
-目前实现功能：
-1.多线程下载,线程数可配置
-2.根据配置抽取页面信息、链接
-3.根据配置构造SQL语句写入mysql
-4.
-
-TODO List：
-1. KISS: Keep it simple & stupid!
-2. Supports cookies,and authentication.
-
-
 Reference:
 程序架构参考淘宝官博：www.searchtb.com/2011/07/快速构建实时抓取集群.html
-
-
