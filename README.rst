@@ -8,7 +8,7 @@ Reference:
 
 
 目前实现功能：
--------------
+^^^^^^^^^^^^^
 
 1.多线程下载,线程数可配置
 2.无需修改代码，按照规则添加配置就可以完成页面抽取、入库
@@ -17,7 +17,7 @@ Reference:
 
 
 TODO List：
--------------
+^^^^^^^^^^^^^
 
 1. KISS: Keep it simple & stupid!
 2. Supports cookies,and authentication.
@@ -79,6 +79,7 @@ maps.cfg
 详细例子参见maps.cfg
 
 ::
+
     {
         "http://venue.damai.cn/search.aspx":{
             "info":"抓取XX网场馆列表页页",
@@ -113,6 +114,7 @@ RUN
 首先确认redis和mysql服务是否已启动并可用，然后执行：
 
 ::
+
     ./crawl spider_name
     options:
         -d ./logs 可将输出写入指定文件夹的日志中
