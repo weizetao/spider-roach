@@ -1,21 +1,23 @@
 关于
-===============================
+========
 
-一个分布式定向抓取集群的简单实现
+一个分布式定向抓取集群的简单实现。
 
 Reference:
-程序架构参考淘宝官博：www.searchtb.com/2011/07/快速构建实时抓取集群.html
+    程序架构参考淘宝官博：www.searchtb.com/2011/07/快速构建实时抓取集群.html
+
 
 目前实现功能：
--------------------------------
+-------------
 
 1.多线程下载,线程数可配置
 2.无需修改代码，按照规则添加配置就可以完成页面抽取、入库
 3.利用Redis的list作为抓取队列，zset作为已抓取集合
 4.支持分布式部署多个爬虫，Redis作为核心，mysql为存储,当然redis/mysql自身拥有各自的扩展方案
 
+
 TODO List：
--------------------------------
+-------------
 
 1. KISS: Keep it simple & stupid!
 2. Supports cookies,and authentication.
@@ -25,7 +27,7 @@ TODO List：
 
 
 INSTALL
-===============================
+========
 
 确认安装Python2.7及依赖库: 
 MySQLdb: http://sourceforge.net/projects/mysql-python/
@@ -37,10 +39,11 @@ git clone https://github.com/agathewiky/spider-roach.git
 
 
 How?
-===============================
+========
+
 
 scheduler.py 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------
 
 定义自己的爬虫,实现爬虫的调度算法，并将pipeline中负责解析的类注册到爬虫中;
 继承BaseSpider基类即可实现一个自己的爬虫，然后重写 Rules函数，定义自己的爬行策略。
@@ -68,8 +71,9 @@ scheduler.py
                 #do something
                 time.sleep(5)
     
+
 maps.cfg
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------
 
 配置待抓取页面相应的抽取规则
 详细例子参见maps.cfg
@@ -95,15 +99,16 @@ maps.cfg
          },
     }
 
+
 settings.py
-^^^^^^^^^^^^^^^^^^^^
+-------------
 
 配置Redis,mysql的连接参数
 配置maps.cfg路径位置
 
 
 RUN
-============================
+========
 
 首先确认redis和mysql服务是否已启动并可用，然后执行：
 
