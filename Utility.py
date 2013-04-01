@@ -2,7 +2,7 @@
 #-*- coding:UTF-8 -*-
 
 from collections import deque
-import threading
+#import threading
 import time
 
 class DQueue:

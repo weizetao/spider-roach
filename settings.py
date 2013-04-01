@@ -9,10 +9,10 @@ def getRedis(db=0):
 
 def getMysql():
     return MySQLdb.connect(host='localhost',\
-            user='test',passwd='123456',db="spider_db",port=9300,charset="utf8")
+            user='test',passwd='123456',db="spider_db",port=3306,charset="utf8")
 
-def get_Maps():
-    map_file = open("./maps.cfg", "r")
+def get_Maps(cfg='./maps.cfg'):
+    map_file = open(cfg, "r")
     str = map_file.read()
     map_file.close()
     try:
