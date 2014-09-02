@@ -23,15 +23,15 @@ class roach(BaseSpider):
         #linkbase
         linkbase = getRedis()
 
-        url_list = DQueue(linkbase,'url_list')
-        url_set = Record(linkbase, 'crawled_set')
+        self.url_list = DQueue(linkbase,'url_list')
+        self.url_set = Record(linkbase, 'crawled_set')
 
         base.url_maps = get_Maps()
         signal.signal(60, self.reload_handler)
 
         list = {
-            'url':url_list,
-            'url_set':url_set,
+            'url':self.url_list,
+            'url_set':self.url_set,
         }
 
         self.AddRules(list, 'Parse_url', 'url', 10)
@@ -40,7 +40,7 @@ class roach(BaseSpider):
         """调度策略"""
         while 1:
             time.sleep(5)
-            # url_list.push(start_url)
+            # self.url_list.push(start_url)
 
     def reload_handler(self,signum,frame):
         tmp = get_Maps()
