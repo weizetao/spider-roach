@@ -63,19 +63,19 @@ scheduler.py
         def Rules(self):
             #linkbase
             linkbase = getRedis()
-            url_list = DQueue(linkbase,'url_list')
-            url_set = Record(linkbase, 'crawled_set')
+            self.url_list = DQueue(linkbase,'url_list')
+            self.url_set = Record(linkbase, 'crawled_set')
             base.url_maps = get_Maps('./maps.cfg')
             list = {
-                'url':url_list,
-                'url_set':url_set,
+                'url':self.url_list,
+                'url_set':self.url_set,
             }
             self.AddRules(list, 'Parse_url', 'url', 10)
     
         def scheduling(self):
             """重写scheduling,实现自己的调度策略"""
             start_url = 'http://venue.damai.cn/search.aspx'
-            url_list.push(start_url)
+            self.url_list.push(start_url)
             while 1:
                 #do something
                 time.sleep(5)
