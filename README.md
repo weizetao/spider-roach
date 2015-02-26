@@ -57,8 +57,6 @@ scheduler.py
 定义自己的爬虫,实现爬虫的调度算法，并将pipeline中负责解析的类注册到爬虫中;
 继承BaseSpider基类即可实现一个自己的爬虫，然后重写 Rules函数，定义自己的爬行策略。
 
-:: 
-
     class spider_name(BaseSpider):
         def Rules(self):
             #linkbase
@@ -86,8 +84,6 @@ maps.cfg
 
 配置待抓取页面相应的抽取规则
 详细例子参见maps.cfg
-
-::
 
     {
         "http://venue.damai.cn/search.aspx":{
@@ -121,8 +117,6 @@ RUN
 ========
 
 首先确认redis和mysql服务是否已启动并可用，然后执行：
-
-::
 
     ./crawl spider_name
     options:
